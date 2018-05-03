@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/header :: common-header" />
+<header th:replace="common/header :: navbar"></header>
+
+
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Insert title here</title>
+
+    <style>
+        .username.ng-valid {
+            background-color: lightgreen;
+        }
+        .username.ng-dirty.ng-invalid-required {
+            background-color: red;
+        }
+        .username.ng-dirty.ng-invalid-minlength {
+            background-color: yellow;
+        }
+
+        .email.ng-valid {
+            background-color: lightgreen;
+        }
+        .email.ng-dirty.ng-invalid-required {
+            background-color: red;
+        }
+        .email.ng-dirty.ng-invalid-email {
+            background-color: yellow;
+        }
+
+    </style>
+</head>
+
+<body ng-app="myApp" class="ng-cloak">
+
+<br/>
+<br/>
+<br/>
+<div class="container" ng-controller="AccountController as ctrl">
+
+    <h3>Add Accounts T Form</h3>
+
+
+    <form ng-submit="ctrl.submit()" name="myForm" method="post">
+
+        <div class="form-row">
+
+            <div class="form-group col-md-6 disabled">
+                <label class="col-sm-2 col-form-label col-form-label-sm">Bank Id</label>
+
+                <input ng-model="ctrl.account.id" class="form-control form-control-sm" readonly="true"/>
+            </div>
+
+            <div class="form-group col-md-6" >
+                <label 	class="col-sm-3 col-form-label col-form-label-sm">Number Account</label>
+                <input ng-model="ctrl.account.numberAccount" placeholder="000-000-000" class="form-control form-control-sm" type="text" required="required"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label font-weight-bold text-secondary">Type Account</label>
+                <select name="repeatSelect" id="repeatSelect" ng-model="ctrl.account.typeAccount" class="form-control form-control-sm" required="required">
+                    <option value="">---Please select Status of Transactions---</option>
+                    <option ng-repeat="option in typeaccount" value="{{option.name}}">{{option.name}}</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label font-weight-bold text-secondary">Department</label>
+                <select name="repeatSelect" id="repeatSelect" ng-model="ctrl.account.department" class="form-control form-control-sm" required="required">
+                    <option value="">---Please select Status of Transactions---</option>
+                    <option ng-repeat="option in department" value="{{option.name}}">{{option.name}}</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-12">
+                <label class="col-sm-3 col-form-label col-form-label-sm">Name Account</label>
+                <input	ng-model="ctrl.account.name" placeholder="Description Details" name="myName" id="idExpandedTo" class="col-sm-6 form-control form-control-sm" type="text"  required="required" />
+                <div class="has-error" ng-show="myForm.$dirty">
+                    <span ng-show="myForm.myName.$invalid" class="font-italic text-danger">The name is required.</span>
+                </div>
+
+            </div>
+
+            <div class="form-actions floatRight">
+                <input type="submit"  value="{{!ctrl.account.id ? 'Add' : 'Update'}}" class="btn btn-primary btn-sm" />
+                <button type="button" ng-click="ctrl.reset()" class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset Form</button>
+            </div>
+        </div>
+    </form>
+
+<hr class="bg-primary"/>
+
+<div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading"><span class="lead">List of Accounts </span></div>
+    <div class="tablecontainer">
+        <table class="table table-hover table-secondary">
+            <thead>
+            <tr class="bg-primary text text-white">
+                <th>ID.</th>
+                <th>Number Account</th>
+                <th>Type Account</th>
+                <th>Department</th>
+                <th>Name of Account </th>
+
+                <th width="20%"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="u in ctrl.transactions">
+                <td><span ng-bind="u.id"></span></td>
+                <td><span ng-bind="u.numberAccount"></span></td>
+                <td><span ng-bind="u.typeAccount"></span></td>
+                <td><span ng-bind="u.department"></span></td>
+                <td><span ng-bind="u.name"></span></td>
+
+                <td>
+                    <button type="button" ng-click="ctrl.edit(u.id)" class="btn btn-success custom-width">Edit</button>  <button type="button" ng-click="ctrl.remove(u.id)" class="btn btn-danger custom-width">Remove</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+
+<div th:replace="common/header :: body-bottom-scripts"/>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common/header :: common-header" />
+<header th:replace="common/header :: navbar"></header>
+
+
+<head>
+    <meta charset="ISO-8859-1"/>
+    <title>Insert title here</title>
+
+    <style>
+        .username.ng-valid {
+            background-color: lightgreen;
+        }
+        .username.ng-dirty.ng-invalid-required {
+            background-color: red;
+        }
+        .username.ng-dirty.ng-invalid-minlength {
+            background-color: yellow;
+        }
+
+        .email.ng-valid {
+            background-color: lightgreen;
+        }
+        .email.ng-dirty.ng-invalid-required {
+            background-color: red;
+        }
+        .email.ng-dirty.ng-invalid-email {
+            background-color: yellow;
+        }
+
+    </style>
+</head>
+
+<body ng-app="myApp" class="ng-cloak">
+
+<br/>
+<br/>
+<br/>
+<div class="container" ng-controller="TransactionsController as ctrl">
+
+    <h3>Deposit Transactions Form</h3>
+
+
+    <form ng-submit="ctrl.submit()" name="myForm" method="post">
+
+        <div class="form-row">
+
+            <div class="form-group col-md-6 disabled">
+                <label class="col-sm-3 col-form-label col-form-label-sm">Transactoins Id</label>
+
+                <input ng-model="ctrl.transaction.id" placeholder="Transaction ID read only" class="form-control form-control-sm" readonly="true"/>
+            </div>
+
+
+            <div class="form-group col-md-6">
+                <label class="control-label font-weight-bold text-secondary">Select Bank Account</label>
+                <select ng-model="ctrl.transaction.bankAccount" ng-options="item.accountNumber group by item.nameBank for item in accounts"
+                    class="form-control form-control-sm" id="idBanks" required="required">
+                <option value="">-- choose Bank Account --</option>
+            </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label font-weight-bold text-secondary">Select accounting account</label>
+                <select ng-model="ctrl.transaction.accounts" ng-options="transaction.numberAccount + ' ' + transaction.name group by transaction.department for transaction in typeaccounts"
+                        class="form-control form-control-sm" id="idAccounting" required="required">
+                    <option value="">-- choose Accounting Account --</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="control-label font-weight-bold text-secondary">Status</label>
+                <select name="repeatSelect" id="repeatSelect" ng-model="ctrl.transaction.status" class="form-control form-control-sm" required="required">
+                    <option value="">---Please select Status of Transactions---</option>
+                    <option ng-repeat="option in allstatus" value="{{option.name}}">{{option.name}}</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label 	class="col-sm-3 col-form-label col-form-label-sm">Operation Date</label>
+                <input ng-model="ctrl.transaction.operationDate"  name="createAt" class="form-control form-control-sm" type="date" required="required"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label 	class="col-sm-4 col-form-label col-form-label-sm">Acomplished Date</label>
+                <input ng-model="ctrl.transaction.date"  name="createAt" class="form-control form-control-sm" type="date" required="required"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="col-sm-2 col-form-label col-form-label-sm">Reference</label>
+                <input	ng-model="ctrl.transaction.reference" placeholder="Reference" name="reference" id="idreference" class="form-control form-control-sm" type="text"  required="required" />
+                <div class="has-error" ng-show="myForm.$dirty">
+                    <span ng-show="myForm.reference.$invalid" class="font-italic text-danger">The Reference is required.</span>
+               </div>
+
+            </div>
+
+            <div class="form-group col-md-6" >
+                <label 	class="col-sm-3 col-form-label col-form-label-sm">Deposit Amount</label>
+                <input ng-model="ctrl.transaction.depositAmount" placeholder="Deposit Amount" class="form-control form-control-sm" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" type="number" ng-minlength="1" ng-maxlength="10" required="required"/>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="col-sm-2 col-form-label col-form-label-sm">Description</label>
+                <textarea	ng-model="ctrl.transaction.description" placeholder="Description Details" name="myName" id="idDescription" class="form-control form-control-sm"  type="text"  required="required" />
+                <div class="has-error" ng-show="myForm.$dirty">
+                    <span ng-show="myForm.myName.$invalid" class="font-italic text-danger">The name is required.</span>
+                </div>
+
+            </div>
+
+        <div class="form-group">
+            <div class="col-auto my-1">
+                <div class="custom-control custom-checkbox mr-sm-2">
+
+                </div>
+            </div>
+        </div>
+
+
+            <div class="form-actions form-group col-md-6 floatLeft">
+                <input type="submit"  value="{{!ctrl.transaction.id ? 'Add' : 'Update'}}" class="btn btn-primary btn-sm" />
+                <button type="button" ng-click="ctrl.reset()" class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset Form</button>
+            </div>
+        </div>
+    </form>
+
+<hr class="bg-primary"/>
+
+
+</div>
+
+
+<div th:replace="common/header :: body-bottom-scripts"/>
+
+
+</body>
+</html>

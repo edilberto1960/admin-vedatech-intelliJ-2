@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/header :: common-header" />
+<header th:replace="common/header :: navbar"></header>
+
+<head>
+	<meta charset="ISO-8859-1"/>
+<title>Insert title here</title>
+</head>
+<body ng-app="myApp" class="ng-cloak">
+
+<br/>
+<br/>
+<br/>
+<div class="container" ng-controller="ReportsController as ctrl">
+
+	<h3>Transactions Reports</h3>
+
+	<form ng-submit="ctrl.submit()" name="myForm" method="post">
+		<div class="form-row">
+
+
+			<div class="form-group col-md-3">
+				<label class="control-label font-weight-bold text-secondary">Select Bank Account</label>
+				<select ng-model="ctrl.user2.bank" ng-options="item.accountNumber group by item.nameBank for item in accounts"
+						class="form-control form-control-sm" id="idBanks">
+					<option value="">-- choose Bank Account --</option>
+				</select>
+			</div>
+
+			<div class="form-group col-md-3">
+				<label 	class="control-label font-weight-bold text-secondary">Initial Date</label>
+				<input ng-model="ctrl.user2.initialDate"  name="createAt" class="form-control form-control-sm" type="date"/>
+			</div>
+
+			<div class="form-group col-md-3">
+				<label 	class="control-label font-weight-bold text-secondary">Final Date</label>
+				<input ng-model="ctrl.user2.finalDate"  name="createAt" class="form-control form-control-sm" type="date"/>
+			</div>
+
+			<div class="form-actions form-group col-md-6 floatLeft">
+				<input type="submit"  value="{{!ctrl.user2.id ? 'Add' : 'Update'}}" class="btn btn-primary btn-sm" />
+				<button type="button" ng-click="ctrl.reset()" class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset Form</button>
+			</div>
+
+
+		</div>
+
+	</form>
+
+
+<div class="row">
+	<td><p class="small font-weight-bold">Name Bank:&nbsp;</p><span class="small" ng-bind="ctrl.transactions[0].bankAccount.nameBank"></span></td>&nbsp; &nbsp;
+	<td><p class="small font-weight-bold">Account Number:&nbsp;</p><span class="small" ng-bind="ctrl.transactions[0].bankAccount.accountNumber"></span></td>&nbsp; &nbsp;
+	<td><p class="small font-weight-bold">Initial Operation:&nbsp;</p> <span class="small" ng-bind="ctrl.transactions[0].bankAccount.createAt | date: yyyy-MM-dd"></span></td>&nbsp; &nbsp;
+	<td><p class="small font-weight-bold">Initial Balance:&nbsp;</p><span class="small" ng-bind="ctrl.transactions[0].bankAccount.balance | currency"></span></td>
+</div>
+
+<hr class="bg-primary"/>
+
+<div class="small panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading"><span class="lead">List of Accounts </span></div>
+	<div class="tablecontainer">
+		<table class="table table-hover table-secondary">
+			<thead>
+			<tr class="bg-primary text text-white">
+				<th>ID.</th>
+				<th>Date</th>
+				<th>Operation Date</th>
+				<th>Reference</th>
+				<th>Expanded to</th>
+				<th></th>
+				<th>Deposit</th>
+				<th>Check</th>
+				<th>Balance phone</th>
+				<th>Description</th>
+				<th width="20%"></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="u in ctrl.transactions">
+				<td><span ng-model="u.id"></span></td>
+				<td><span ng-bind="u.date| date: yyyy-MM-dd"></span></td>
+				<td><span ng-bind="u.operationDate| date: yyyy-MM-dd"></span></td>
+				<td><span ng-bind="u.reference"></span></td>
+				<td><span ng-bind="u.expandedTo"></span></td>
+				<td><span>|</span></td>
+				<td><span ng-hide="u.depositAmount == 0" ng-bind="u.depositAmount | currency"></span></td>
+				<td><span ng-hide="u.checkAmount == 0" ng-bind="u.checkAmount | currency"></span></td>
+				<td><span ng-bind="u.balance | currency"></span></td>
+				<td><span ng-bind="u.description"></span></td>
+				<td>
+					<button type="button" ng-click="ctrl.edit(u.id)" class="btn btn-success btn-sm custom-width">Edit</button>  <button type="button" ng-click="ctrl.remove(u.id)" class="btn btn-danger btn-sm custom-width">Remove</button>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+
+
+/*Modal Deposit*/
+	<div id="myModalDeposit" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="container">
+				<form ng-submit="ctrl.submitUser()" name="myForm" method="post">
+
+					<div class="form-row">
+
+						<div class="form-group col-md-6 disabled">
+							<label class="col-sm-3 col-form-label col-form-label-sm">Transactoins Id</label>
+
+							<input ng-model="ctrl.user.id" placeholder="Transaction ID read only" class="form-control form-control-sm" readonly="true"/>
+						</div>
+
+
+						<div class="form-group col-md-6">
+							<label class="control-label font-weight-bold text-secondary">Select Bank Account</label>
+							<select ng-model="ctrl.user.bankAccount.nameBank" 	class="form-control form-control-sm" id="idBankAccount">
+								<option value="">-- choose Accounting Account --</option>
+								<option ng-repeat="option in accounts" value="{{option.nameBank}}">{{option.nameBank}}</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="control-label font-weight-bold text-secondary">Select accounting account</label>
+							<select ng-model="ctrl.user.accounts.name" 	class="form-control form-control-sm" id="idAccounting">
+								<option value="">-- choose Accounting Account --</option>
+								<option ng-repeat="option in typeaccounts" value="{{option.name}}">{{option.name}}</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="control-label font-weight-bold text-secondary">Status</label>
+							<select name="repeatSelect" id="repeatSelect" ng-model="ctrl.user.status" class="form-control form-control-sm">
+								<option value="">---Please select Status of Transactions---</option>
+								<option ng-repeat="option in allstatus" value="{{option.name}}">{{option.name}}</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label 	class="col-sm-3 col-form-label col-form-label-sm">Operation Date</label>
+							<input ng-model="ctrl.user.operationDate"  name="operationDate" class="form-control form-control-sm" type="date"/>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label 	class="col-sm-4 col-form-label col-form-label-sm">Acomplished Date</label>
+							<input ng-model="ctrl.user.date"  name="date" class="form-control form-control-sm" type="date"/>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="col-sm-2 col-form-label col-form-label-sm">Reference</label>
+							<input	ng-model="ctrl.user.reference" placeholder="Reference" name="reference" id="idreference" class="form-control form-control-sm" type="text"  required="required" />
+							<div class="has-error" ng-show="myForm.$dirty">
+								<span ng-show="myForm.reference.$invalid" class="font-italic text-danger">The Reference is required.</span>
+							</div>
+
+						</div>
+
+						<div class="form-group col-md-6" >
+							<label 	class="col-sm-3 col-form-label col-form-label-sm">Deposit Amount</label>
+							<input ng-model="ctrl.user.depositAmount" placeholder="Deposit Amount" class="form-control form-control-sm" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" type="number" ng-minlength="1" ng-maxlength="10" required="required"/>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="col-sm-2 col-form-label col-form-label-sm">Description</label>
+							<textarea	ng-model="ctrl.user.description" placeholder="Description Details" name="myName" id="idDescription" class="form-control form-control-sm" ng-pattern="/^[a-zA-Z\s]*$/" type="text"  required="required" ng-minlength="3"/>
+							<div class="has-error" ng-show="myForm.$dirty">
+								<span ng-show="myForm.myName.$invalid" class="font-italic text-danger">The name is required.</span>
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<div class="col-auto my-1">
+								<div class="custom-control custom-checkbox mr-sm-2">
+
+								</div>
+							</div>
+						</div>
+
+
+						<div class="form-actions form-group col-md-6 floatLeft">
+							<input type="submit"  value="{{!ctrl.user.id ? 'Add' : 'Update'}}" class="btn btn-primary btn-sm" />
+							<button type="button" ng-click="ctrl.reset()" class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset Form</button>
+						</div>
+					</div>
+				</form>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+	<div id="myModalCheck" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<form ng-submit="ctrl.submitUser()" name="myForm" method="post">
+
+					<div class="form-row">
+
+						<div class="form-group col-md-6 disabled">
+							<label class="col-sm-3 col-form-label col-form-label-sm">Transactoins Id</label>
+
+							<input ng-model="ctrl.user.id" placeholder="Transaction ID read only" class="form-control form-control-sm" readonly="true"/>
+						</div>
+
+
+						<div class="form-group col-md-6">
+							<label class="control-label font-weight-bold text-secondary">Select Bank Account</label>
+							<select ng-model="ctrl.user.bankAccount.nameBank" 	class="form-control form-control-sm" id="idBankAccount">
+								<option value="">-- choose Accounting Account --</option>
+								<option ng-repeat="option in accounts" value="{{option.nameBank}}">{{option.nameBank}}</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="control-label font-weight-bold text-secondary">Select accounting account</label>
+							<select ng-model="ctrl.user.accounts.name" 	class="form-control form-control-sm" id="idAccounting">
+								<option value="">-- choose Accounting Account --</option>
+								<option ng-repeat="option in typeaccounts" value="{{option.name}}">{{option.name}}</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="control-label font-weight-bold text-secondary">Status</label>
+							<select name="repeatSelect" id="repeatSelect" ng-model="ctrl.user.status" class="form-control form-control-sm">
+								<option value="">---Please select Status of Transactions---</option>
+								<option ng-repeat="option in allstatus" value="{{option.name}}">{{option.name}}</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label 	class="col-sm-3 col-form-label col-form-label-sm">Operation Date</label>
+							<input ng-model="ctrl.user.operationDate"  name="createAt" class="form-control form-control-sm" type="date"/>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label 	class="col-sm-4 col-form-label col-form-label-sm">Acomplished Date</label>
+							<input ng-model="ctrl.user.date"  name="createAt" class="form-control form-control-sm" type="date"/>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="col-sm-2 col-form-label col-form-label-sm">Reference</label>
+							<input	ng-model="ctrl.user.reference" placeholder="Reference" name="reference" id="idreference" class="form-control form-control-sm" type="text"  required="required" />
+							<div class="has-error" ng-show="myForm.$dirty">
+								<span ng-show="myForm.reference.$invalid" class="font-italic text-danger">The Reference is required.</span>
+							</div>
+
+						</div>
+
+						<div class="form-group col-md-6" >
+							<label 	class="col-sm-3 col-form-label col-form-label-sm">Check Amount</label>
+							<input ng-model="ctrl.user.checkAmount" placeholder="Check Amount" class="form-control form-control-sm" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" type="number" ng-minlength="1" ng-maxlength="10" required="required"/>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="col-sm-3 col-form-label col-form-label-sm">Expanded To</label>
+							<input	ng-model="ctrl.user.expandedTo" placeholder="Description Details" name="myName" id="idExpandedTo" class="form-control form-control-sm" type="text"  required="required"/>
+							<div class="has-error" ng-show="myForm.$dirty">
+								<span ng-show="myForm.myName.$invalid" class="font-italic text-danger">The name is required.</span>
+							</div>
+
+						</div>
+
+						<div class="form-group col-md-6">
+							<label class="col-sm-2 col-form-label col-form-label-sm">Description</label>
+							<textarea	ng-model="ctrl.user.description" placeholder="Description Details" name="myName" id="idDescription" class="form-control form-control-sm" ng-pattern="/^[a-zA-Z\s]*$/" type="text"  required="required" ng-minlength="3"/>
+							<div class="has-error" ng-show="myForm.$dirty">
+								<span ng-show="myForm.myName.$invalid" class="font-italic text-danger">The name is required.</span>
+							</div>
+
+						</div>
+
+						<div class="form-group">
+							<div class="col-auto my-1">
+								<div class="custom-control custom-checkbox mr-sm-2">
+
+								</div>
+							</div>
+						</div>
+
+
+						<div class="form-actions form-group col-md-6 floatLeft">
+							<input type="submit"  value="{{!ctrl.user.id ? 'Add' : 'Update'}}" class="btn btn-primary btn-sm" />
+							<button type="button" ng-click="ctrl.reset()" class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset Form</button>
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+
+	 <div th:replace="common/header :: body-bottom-scripts"/>
+</body>
+</html>
+
+<!--	<td th:text="${primaryTransaction.depositAmount > 0 ? ''+ primaryTransaction.depositAmount: ''}"></td>-->
+<!--		<td th:text="${primaryTransaction.checkAmount > 0 ? ''+ primaryTransaction.checkAmount:  ''}"></td>-->
